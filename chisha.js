@@ -1,3 +1,8 @@
+if (!process.env.token) {
+	console.log('Error: Specify token in environment');
+	process.exit(1);
+}
+
 var Botkit = require('Botkit');
 var os = require('os');
 var RestaurantList = [
@@ -15,7 +20,7 @@ var controller = Botkit.slackbot({
 });
 
 var bot = controller.spawn({
-    token: "xoxb-88090889617-diF9tdAA2r1hUbSEzNNXQmN1"
+    token: process.env.token
 }).startRTM();
 
 controller.on('direct_mention', function(bot, message) {
