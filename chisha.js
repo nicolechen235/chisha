@@ -18,6 +18,7 @@ var RestaurantList = [
     'Valcano Sushi']
 var nowChoice;
 var generated = false;
+var manuallyReset = false;
 
 var controller = Botkit.slackbot({
     debug: true
@@ -28,17 +29,33 @@ var bot = controller.spawn({
 }).startRTM();
 
 controller.on('direct_mention', function(bot, message) {
-    bot.reply(message, getNowChoice());
+    if (message.text.indexOf('new') == -1) {        
+        bot.reply(message, getNowChoice());
+    }
 });
 
-controller.hears(['new'], ['message_received'], function(bot, message) {
-    generated = false;
-    bot.reply(message, 'Oh I get a new one.');
+controller.hears(['new'], 'direct_message,direct_mention,mention', function(bot, message) {
+    if (!manuallyReset) {
+        generated = false;
+        manuallyReset = true;
+        bot.reply(message, 'Oh I get a new one.');
+        bot.reply(message, 'Try ' + getNowChoice());
+
+    }
+    else {
+        bot.reply(message, 'Just GO ' + getNowChoice());
+
+        date = new Date();
+        hour = date.getHours();
+        bot.reply(message, 'You can reset until ' + (hour > 15 ? 23 : 15) + ':00.');
+    }
+
 });
 
 
 
 var j = Schedule.scheduleJob('0 15,23 * * *', function() {
+    manuallyReset = false;
     nowChoice = pickupRestaurant();
 });
 
@@ -47,6 +64,7 @@ function pickupRestaurant() {
     generated = true;
 
     if (randomSeq.length <= 0) {
+
         randomSeq = RestaurantList.slice()
     }
     
@@ -57,7 +75,6 @@ function pickupRestaurant() {
     randomSeq[remainCount - 1] = tmp;
     console.log(randomSeq);
 
-    randomSeq.pop();
     return randomSeq.pop();
 }
 
