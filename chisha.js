@@ -9,13 +9,13 @@ var Schedule = require('node-schedule')
 var os = require('os');
 var RestaurantList = [
     'Subway',
-    'Panda Express',
-    'McDonald\'s',
-    'Yoshinoya',
-    'Soy',
-    'Hawaiian BBQ',
-    'Taco Bell',
-    'Valcano Sushi']
+    'Panda Express']
+    // 'McDonald\'s',
+    // 'Yoshinoya',
+    // 'Soy',
+    // 'Hawaiian BBQ',
+    // 'Taco Bell',
+    // 'Valcano Sushi']
 var nowChoice;
 var generated = false;
 var manuallyReset = false;
@@ -97,7 +97,8 @@ controller.hears(['shutdown'], 'direct_message,direct_mention,mention', function
 
 var j = Schedule.scheduleJob('0 15,23 * * *', function() {
     manuallyReset = false;
-    nowChoice = pickupRestaurant();
+    generated = false;
+    getNowChoice();
 });
 
 var randomSeq = []
@@ -116,13 +117,20 @@ function pickupRestaurant() {
     randomSeq[remainCount - 1] = tmp;
     console.log("Remain sequence:" + randomSeq);
 
-
     return randomSeq.pop();
 }
 
 function getNowChoice() {
     if (!generated) {
-        nowChoice = pickupRestaurant();
+        tmpPick = pickupRestaurant();
+        // this can happen when a new sequence start, 
+        // and generate a new one just as same as the last one in last sequence
+        while (tmpPick == nowChoice) {
+            randomSeq.push(tmpPick);
+            tmpPick = pickupRestaurant();
+        } 
+
+        nowChoice = tmpPick;
     }
 
     return nowChoice;
