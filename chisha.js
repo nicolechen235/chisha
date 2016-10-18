@@ -22,7 +22,7 @@ var manuallyReset = false;
 var superuser = false;
 
 var controller = Botkit.slackbot({
-    debug: true
+    debug: false
 });
 
 var bot = controller.spawn({
@@ -44,6 +44,11 @@ controller.on('direct_mention,mention,direct_message', function(bot, message) {
         }
 
     }
+});
+
+// liu hao is stupid, hahaha
+controller.hears(['stupid'], 'direct_message,direct_mention,mention', function(bot, message) {
+    bot.reply(message, '<@liu462>');
 });
 
 controller.hears(['new'], 'direct_message,direct_mention,mention', function(bot, message) {
@@ -109,7 +114,8 @@ function pickupRestaurant() {
     var tmp = randomSeq[r];
     randomSeq[r] = randomSeq[remainCount-1]
     randomSeq[remainCount - 1] = tmp;
-    console.log(randomSeq);
+    console.log("Remain sequence:" + randomSeq);
+
 
     return randomSeq.pop();
 }
