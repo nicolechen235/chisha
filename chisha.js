@@ -7,15 +7,32 @@ var Botkit = require('Botkit');
 var Schedule = require('node-schedule')
 
 var os = require('os');
-var RestaurantList = [
-    'Subway',
-    'Panda Express',
-    'McDonald\'s',
-    'Yoshinoya',
-    'Soy',
-    'Hawaiian BBQ',
-    'Taco Bell',
-    'Valcano Sushi']
+var RestaurantList = [{
+    name: "Subway",
+    address: "https://goo.gl/maps/CHcbSNHyi9w"
+},{
+    name: "Panda Express",
+    address: "https://goo.gl/maps/FMY1mEMhuiN2"
+},{
+    name: "McDonald\'s",
+    address: "https://goo.gl/maps/hNz83CfUfJG2"
+},{
+    name: "Yoshinoya",
+    address: "https://goo.gl/maps/wH1Vd7fQftD2"
+},{
+    name: "Soy",
+    address: "https://goo.gl/maps/1igUyZW4XjD2"
+},{
+    name: "Hawaiian BBQ",
+    address: "https://goo.gl/maps/cNFcHekjDaA2"
+},{
+    name: "Taco Bell",
+    address: "https://goo.gl/maps/aSL5EcboRb72"
+},{
+    name:"Valcano Sushi",
+    address: "https://goo.gl/maps/orLtR2Q9RKy"
+}]
+
 var nowChoice;
 var generated = false;
 var manuallyReset = false;
@@ -115,7 +132,12 @@ function pickupRestaurant() {
     var tmp = randomSeq[r];
     randomSeq[r] = randomSeq[remainCount-1]
     randomSeq[remainCount - 1] = tmp;
-    console.log("Remain sequence:" + randomSeq);
+
+    console.log("----------------")
+    console.log("Remain sequence:");
+    randomSeq.forEach(function(tuple) {
+        console.log(tuple.name);
+    });
 
     return randomSeq.pop();
 }
@@ -133,5 +155,5 @@ function getNowChoice() {
         nowChoice = tmpPick;
     }
 
-    return nowChoice;
+    return nowChoice.name +  "\n" + nowChoice.address;
 }
