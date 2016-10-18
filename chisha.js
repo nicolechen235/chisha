@@ -19,6 +19,7 @@ var RestaurantList = [
 var nowChoice;
 var generated = false;
 var manuallyReset = false;
+var superuser = false;
 
 var controller = Botkit.slackbot({
     debug: true
@@ -28,26 +29,36 @@ var bot = controller.spawn({
     token: process.env.token
 }).startRTM();
 
-controller.on('direct_mention', function(bot, message) {
-    if (message.text.indexOf('new') == -1 && message.text.indexOf('shutdown')) {        
+controller.on('direct_mention,mention,direct_message', function(bot, message) {
+    if (message.text.length == 0) {
         bot.reply(message, getNowChoice());
+    }
+    else {
+        var msg_text = message.text.trim();
+
+        if (msg_text.indexOf('sudo') == 0) {
+            superuser = true;
+        }
+        else {
+            superuser = false;
+        }
+
     }
 });
 
 controller.hears(['new'], 'direct_message,direct_mention,mention', function(bot, message) {
-    if (!manuallyReset) {
+    if (superuser || !manuallyReset) {
         generated = false;
         manuallyReset = true;
-        bot.reply(message, 'Oh I get a new one.');
+        bot.reply(message, 'Oh I got a new one.');
         bot.reply(message, 'Try ' + getNowChoice());
-
     }
     else {
         bot.reply(message, 'Just GO ' + getNowChoice());
 
         date = new Date();
         hour = date.getHours();
-        bot.reply(message, 'You can reset until ' + (hour > 15 ? 23 : 15) + ':00.');
+        bot.reply(message, 'You can reset after ' + (hour > 15 ? 23 : 15) + ':00.');
     }
 
 });
