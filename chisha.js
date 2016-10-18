@@ -9,13 +9,13 @@ var Schedule = require('node-schedule')
 var os = require('os');
 var RestaurantList = [
     'Subway',
-    'Panda Express']
-    // 'McDonald\'s',
-    // 'Yoshinoya',
-    // 'Soy',
-    // 'Hawaiian BBQ',
-    // 'Taco Bell',
-    // 'Valcano Sushi']
+    'Panda Express',
+    'McDonald\'s',
+    'Yoshinoya',
+    'Soy',
+    'Hawaiian BBQ',
+    'Taco Bell',
+    'Valcano Sushi']
 var nowChoice;
 var generated = false;
 var manuallyReset = false;
